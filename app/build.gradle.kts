@@ -72,6 +72,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation ("androidx.compose.material3:material3:1.0.0-beta01")
+    implementation ("androidx.compose.ui:ui-tooling:1.0.0")
+
     implementation ("androidx.navigation:navigation-compose:2.7.4")
     implementation ("androidx.navigation:navigation-fragment:2.7.4")
     implementation ("androidx.navigation:navigation-ui:2.7.4")

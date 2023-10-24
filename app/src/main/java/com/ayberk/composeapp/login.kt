@@ -57,193 +57,196 @@ import kotlin.coroutines.jvm.internal.*
 @Composable
 fun login(navHostController: NavHostController, viewModel: RegisterViewModel = hiltViewModel(), viewLoginModel: LoginViewModel = hiltViewModel()){
 
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var isEmailValid by remember { mutableStateOf(true) }
-        var isPasswordValid by remember { mutableStateOf(true) }
-        var checkedState by remember { mutableStateOf(false) }
-        var isShowingEmailError by remember { mutableStateOf(false) }
-        var isShowingPasswordError by remember { mutableStateOf(false) }
-        var rememberMe by remember { mutableStateOf(false) }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
+    var checkedState by remember { mutableStateOf(false) }
+    var isShowingEmailError by remember { mutableStateOf(false) }
+    var isShowingPasswordError by remember { mutableStateOf(false) }
+    var rememberMe by remember { mutableStateOf(false) }
 
 
 
     Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.user),
+            contentDescription = "Kullanıcı Resim",
+            modifier = Modifier.size(100.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = email)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(value = email,
+            onValueChange = {
+                email = it
+            }, label = { Text(text = stringResource(id = R.string.email)) },
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .padding(bottom = 8.dp),
+            leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
+                Icon(imageVector = Icons.Default.Email, contentDescription = null)
+            }
+        )
+
+        OutlinedTextField(value = password,
+            onValueChange = {
+                password = it
+            }, label = { Text(text = stringResource(id = R.string.password)) },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .padding(bottom = 8.dp),
+            leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
+                Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+            }
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .padding(bottom = 8.dp)
+        ) {
+            Checkbox(
+                checked = rememberMe,
+                onCheckedChange = { isChecked ->
+                    rememberMe = isChecked
+                }
+            )
+
+            Text(
+                text = "Beni Hatırla"
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp)
+            ) {
+                Text(
+                    text = "Şifremi unuttum",
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user),
-                        contentDescription = "Kullanıcı Resim",
-                        modifier = Modifier.size(100.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(text = email)
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(value = email,
-                        onValueChange = {
-                            email = it
-                        }, label = { Text(text = stringResource(id = R.string.email)) },
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .padding(bottom = 8.dp),
-                        leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
-                            Icon(imageVector = Icons.Default.Email, contentDescription = null)
+                        .background(Color.White)
+                        .clickable {
+                            navHostController.navigate("register")
                         }
-                    )
+                )
+                Spacer(
+                    modifier = Modifier
+                        .background(Color.Gray)
+                        .height(1.dp)
+                        .width(103.dp)
+                        .align(Alignment.BottomStart) // Çizgiyi yazının altına hizalar
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(value = password,
-                        onValueChange = {
-                            password = it
-                        }, label = { Text(text = stringResource(id = R.string.password)) },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .padding(bottom = 8.dp),
-                        leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
-                            Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-                        }
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .padding(bottom = 8.dp)
-                    ) {
-                        Checkbox(
-                            checked = rememberMe,
-                            onCheckedChange = { isChecked ->
-                                rememberMe = isChecked
-                            }
-                        )
+        val context = LocalContext.current
 
-                        Text(
-                            text = "Beni Hatırla"
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 40.dp)
-                        ) {
-                            Text(
-                                text = "Şifremi unuttum",
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .clickable {
-                                        navHostController.navigate("register")
-                                    }
-                            )
-                            Spacer(
-                                modifier = Modifier
-                                    .background(Color.Gray)
-                                    .height(1.dp)
-                                    .width(103.dp)
-                                    .align(Alignment.BottomStart) // Çizgiyi yazının altına hizalar
-                            )
-                        }
+        Button(
+            onClick = {
+                isEmailValid = isValidEmail(email)
+                isPasswordValid = isValidPassword(password)
+
+                if (isEmailValid && isPasswordValid) {
+                    viewLoginModel.login(email, password)
+                    if (rememberMe) {
+                        savePassword(context = context, password)
+                        saveEmail(context = context,email)
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                      val context = LocalContext.current
-
-                    Button(
-                        onClick = {
-                            isEmailValid = isValidEmail(email)
-                            isPasswordValid = isValidPassword(password)
-
-                            if (isEmailValid && isPasswordValid) {
-                                viewLoginModel.login(email, password)
-                                if (rememberMe) {
-                                    savePassword(context = context, password)
-                                }
-                            } else {
-                                isShowingEmailError = true
-                                isShowingPasswordError = true
-                            }
-                        },
-                        enabled = email.isNotBlank() && password.isNotBlank(),
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(bottom = 16.dp)
-                    ) {
-                        Text("Giriş Yap")
-                    }
+                } else {
+                    isShowingEmailError = true
+                    isShowingPasswordError = true
+                }
+            },
+            enabled = email.isNotBlank() && password.isNotBlank(),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 16.dp)
+        ) {
+            Text("Giriş Yap")
+        }
 
 // Daha sonra LoginViewModel'den gelen değeri dinleyerek işlemi kontrol edebilirsiniz.
-                    LaunchedEffect(Unit) {
-                        viewLoginModel.login.collect() { resource ->
-                            when (resource) {
-                                is Resource.Loading -> {
-                                    // Yükleme durumunu burada kontrol et
-                                }
-
-                                is Resource.Success -> {
-                                    // Giriş başarılı olduğunda yapılacak işlemler burada
-                                    navHostController.navigate("anasayfa")
-                                }
-
-                                is Resource.Error -> {
-                                    // Hata durumunu burada kontrol et
-                                    // resource.message ile hata mesajına erişebilirsiniz: resource.message
-
-
-                                }
-
-                                else -> {}
-                            }
-                        }
+        LaunchedEffect(Unit) {
+            viewLoginModel.login.collect() { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        // Yükleme durumunu burada kontrol et
                     }
 
-
-                    Button(
-                        onClick = {
-                            isEmailValid = isValidEmail(email) // Email kontrolü burada yapılıyor
-                            isPasswordValid = isValidPassword(password)
-
-                            if (isEmailValid && isPasswordValid) {
-                             navHostController.navigate("anasayfa")
-                            } else {
-                                isShowingEmailError = true
-                                isShowingPasswordError = true
-                            }
-                            val user = User(email)
-                            val password = password
-                            viewModel.createEmailandPassword(user, password)
-                        },
-                        enabled = email.isNotBlank() && password.isNotBlank(),
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(bottom = 16.dp)
-                    ) {
-                        Text("Kayıt Ol")
+                    is Resource.Success -> {
+                        // Giriş başarılı olduğunda yapılacak işlemler burada
+                        navHostController.navigate("anasayfa")
                     }
 
-                    if (!isEmailValid && isShowingEmailError) {
-                        Text(
-                            text = "Lütfen geçerli bir e-posta adresi giriniz.",
-                            color = Color.Red,
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    } else if (!isPasswordValid && isShowingPasswordError) {
-                        Text(
-                            text = "Şifre uzunluğu 5 karakterden fazla olmalıdır.",
-                            color = Color.Red,
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
+                    is Resource.Error -> {
+                        // Hata durumunu burada kontrol et
+                        // resource.message ile hata mesajına erişebilirsiniz: resource.message
+
+
                     }
+
+                    else -> {}
+                }
+            }
+        }
+
+
+        Button(
+            onClick = {
+                isEmailValid = isValidEmail(email) // Email kontrolü burada yapılıyor
+                isPasswordValid = isValidPassword(password)
+
+                if (isEmailValid && isPasswordValid) {
+                    navHostController.navigate("anasayfa")
+                } else {
+                    isShowingEmailError = true
+                    isShowingPasswordError = true
+                }
+                val user = User(email)
+                val password = password
+                viewModel.createEmailandPassword(user, password)
+            },
+            enabled = email.isNotBlank() && password.isNotBlank(),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 16.dp)
+        ) {
+            Text("Kayıt Ol")
+        }
+
+        if (!isEmailValid && isShowingEmailError) {
+            Text(
+                text = "Lütfen geçerli bir e-posta adresi giriniz.",
+                color = Color.Red,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        } else if (!isPasswordValid && isShowingPasswordError) {
+            Text(
+                text = "Şifre uzunluğu 5 karakterden fazla olmalıdır.",
+                color = Color.Red,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
         Button(
             onClick = {
                 val savedPassword = getSavedPassword(context = context)
-                if (!savedPassword.isNullOrBlank()) {
+                val savedEmail = getSavedEmail(context = context)
+                if (!savedPassword.isNullOrBlank() && !savedEmail.isNullOrBlank()) {
+                    email = savedEmail
                     password = savedPassword
                 }
             },
@@ -251,7 +254,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 .fillMaxWidth(0.5f)
                 .padding(bottom = 16.dp)
         ) {
-            Text("Kayıtlı şifrelerim")
+            Text("Kayıtlı hesabım")
         }
     }
 
@@ -268,6 +271,7 @@ private fun isValidPassword(password: CharSequence): Boolean {
 
 
 private const val PASSWORD_KEY = "user_password"
+private const val Email_KEY = "user_email"
 
 fun savePassword(context: Context, password: String) {
     val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
@@ -281,5 +285,14 @@ fun getSavedPassword(context: Context): String? {
     return sharedPreferences.getString(PASSWORD_KEY, null)
 }
 
+fun saveEmail(context: Context, password: String) {
+    val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPreferences1", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString(Email_KEY, password)
+    editor.apply()
+}
 
-
+fun getSavedEmail(context: Context): String? {
+    val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPreferences1", Context.MODE_PRIVATE)
+    return sharedPreferences.getString(Email_KEY, null)
+}
