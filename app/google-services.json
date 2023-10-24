@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "252809193679",
+    "project_id": "composeapp-51f97",
+    "storage_bucket": "composeapp-51f97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252809193679:android:bbf2932034c3831268afba",
+        "android_client_info": {
+          "package_name": "com.ayberk.composeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf8JTK6uNQ8RYdxhXmaGmTma5Bn2FdXMs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
