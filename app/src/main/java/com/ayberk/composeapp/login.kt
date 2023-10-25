@@ -61,12 +61,9 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
     var password by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(true) }
     var isPasswordValid by remember { mutableStateOf(true) }
-    var checkedState by remember { mutableStateOf(false) }
     var isShowingEmailError by remember { mutableStateOf(false) }
     var isShowingPasswordError by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
-
-
 
     Column(
         modifier = Modifier
@@ -177,7 +174,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
             Text("Giriş Yap")
         }
 
-// Daha sonra LoginViewModel'den gelen değeri dinleyerek işlemi kontrol edebilirsiniz.
+        // Daha sonra LoginViewModel'den gelen değeri dinleyerek işlemi kontrol edebilirsiniz.
         LaunchedEffect(Unit) {
             viewLoginModel.login.collect() { resource ->
                 when (resource) {
@@ -194,14 +191,11 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                         // Hata durumunu burada kontrol et
                         // resource.message ile hata mesajına erişebilirsiniz: resource.message
 
-
                     }
-
                     else -> {}
                 }
             }
         }
-
 
         Button(
             onClick = {
@@ -253,11 +247,11 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .padding(bottom = 16.dp)
+
         ) {
             Text("Kayıtlı hesabım")
         }
     }
-
 }
 
 
