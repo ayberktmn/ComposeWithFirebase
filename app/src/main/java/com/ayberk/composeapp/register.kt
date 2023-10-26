@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -47,29 +48,8 @@ import com.ayberk.composeapp.viewmodel.RegisterViewModel
 @Composable
 fun register(navHostController:NavHostController){
 
-    var isPasswordValid by remember { mutableStateOf(true) }
-    var isShowingPasswordError by remember { mutableStateOf(false) }
+    ChangePasswordScreen(navHostController)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        Image( painter = painterResource(id = R.drawable.changepassword),
-            contentDescription = "Şifre Değişikliği",
-            modifier = Modifier.size(100.dp)
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        ChangePasswordScreen(navHostController)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-    }
 }
 
 private fun isValidPassword(password: CharSequence): Boolean {
@@ -95,6 +75,12 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally, // Öğeleri yatayda ortala
         verticalArrangement = Arrangement.Center
     ){
+
+        Image( painter = painterResource(id = R.drawable.changepassword),
+            contentDescription = "Şifre Değişikliği",
+            modifier = Modifier.size(100.dp)
+        )
+        Spacer(modifier = Modifier.height(30.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -105,7 +91,12 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
                 .padding(bottom = 8.dp),
             leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
                 Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-            }
+            },
+            isError = !isPasswordValid, // Hata durumunda isError'ı true yap
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
+                unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+            )
         )
 
         OutlinedTextField(
@@ -118,7 +109,12 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
                 .padding(bottom = 8.dp),
             leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
                 Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-            }
+            },
+            isError = !isPasswordValid, // Hata durumunda isError'ı true yap
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
+                unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+            )
         )
         
         val context = LocalContext.current
@@ -128,29 +124,33 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
             isPasswordValid = isValidPassword(password)
 
             if (isPasswordValid && password == passwordagain) {
-                navHostController.navigate("login")
-            } else {
-                isShowingPasswordError = true
-            }
 
-            registerViewModel.changePassword(password, passwordagain) { success, message ->
-                if (success) {
-                    // Şifre değişikliği başarılı
-                    Toast.makeText(context,"Şifre Değişikliği Başarılı",Toast.LENGTH_SHORT).show()
-
-                } else {
-                    // Şifre değişikliği başarısız
-                    Toast.makeText(context,"Şifre Değişikliği Yapılamadı",Toast.LENGTH_SHORT).show()
+                registerViewModel.changePassword(password, passwordagain) { success, message ->
+                    if (success) {
+                        // Şifre değişikliği başarılı
+                        Toast.makeText(context, "Şifre Değişikliği Başarılı", Toast.LENGTH_SHORT)
+                            .show()
+                        navHostController.navigate("login")
+                    } else {
+                        // Şifre değişikliği başarısız
+                        Toast.makeText(context, "Şifre Değişikliği Yapılamadı", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
+            else {
+            isShowingPasswordError = true
+        }
         },
+            enabled = passwordagain.isNotBlank() && password.isNotBlank(),
             modifier = Modifier
                 .fillMaxWidth(0.4f)
                 .padding(bottom = 16.dp)
+
             ) {
             Text(text = stringResource(id = R.string.passwordchange))
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
         if (!isPasswordValid || isShowingPasswordError) {
             if (!isPasswordValid) {
                 Text(
