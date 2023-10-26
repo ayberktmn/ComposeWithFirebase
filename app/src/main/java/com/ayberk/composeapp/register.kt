@@ -47,9 +47,7 @@ import com.ayberk.composeapp.viewmodel.RegisterViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun register(navHostController:NavHostController){
-
     ChangePasswordScreen(navHostController)
-
 }
 
 private fun isValidPassword(password: CharSequence): Boolean {
@@ -64,6 +62,7 @@ fun loading(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangePasswordScreen(navHostController: NavHostController) {
+
     val registerViewModel: RegisterViewModel= hiltViewModel()
     var password by remember { mutableStateOf("") }
     var passwordagain by remember { mutableStateOf("") }
@@ -131,6 +130,7 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
                         Toast.makeText(context, "Şifre Değişikliği Başarılı", Toast.LENGTH_SHORT)
                             .show()
                         navHostController.navigate("login")
+                        clearPassword(context)
                     } else {
                         // Şifre değişikliği başarısız
                         Toast.makeText(context, "Şifre Değişikliği Yapılamadı", Toast.LENGTH_SHORT)

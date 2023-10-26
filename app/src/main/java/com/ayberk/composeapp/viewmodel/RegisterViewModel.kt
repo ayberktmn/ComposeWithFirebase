@@ -1,5 +1,9 @@
 package com.ayberk.composeapp.viewmodel
 
+import android.app.LoaderManager.LoaderCallbacks
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.ayberk.composeapp.data.User
 import com.ayberk.composeapp.util.Constans.USER_COLLECTION
@@ -49,6 +53,7 @@ class RegisterViewModel @Inject constructor(
    }
 
    fun changePassword(newPassword: String, confirmPassword: String, onResult: (Boolean, String) -> Unit) {
+      currentUser()
       if (newPassword == confirmPassword) {
          val user = firebaseauth.currentUser
          user?.updatePassword(newPassword)
@@ -63,8 +68,8 @@ class RegisterViewModel @Inject constructor(
          onResult(false, "Şifreler uyuşmuyor")
       }
    }
-   fun currentUser():Boolean {
+
+   fun currentUser() {
       firebaseauth.currentUser
-      return false
    }
 }

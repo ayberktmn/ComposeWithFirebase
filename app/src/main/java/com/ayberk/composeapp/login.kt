@@ -51,6 +51,7 @@ import com.ayberk.composeapp.viewmodel.LoginViewModel
 import androidx.compose.material3.Text
 import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlin.coroutines.jvm.internal.*
 
 
@@ -65,6 +66,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
     var isShowingEmailError by remember { mutableStateOf(false) }
     var isShowingPasswordError by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -243,6 +245,8 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 if (!savedPassword.isNullOrBlank() && !savedEmail.isNullOrBlank()) {
                     email = savedEmail
                     password = savedPassword
+                } else{
+                    Toast.makeText(context,"Kayıtlı Hesap Bulunamadı",Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier
@@ -290,4 +294,12 @@ fun saveEmail(context: Context, password: String) {
 fun getSavedEmail(context: Context): String? {
     val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPreferences1", Context.MODE_PRIVATE)
     return sharedPreferences.getString(Email_KEY, null)
+}
+
+fun clearPassword(context: Context) {
+    val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.remove(PASSWORD_KEY)
+    editor.apply()
+
 }
