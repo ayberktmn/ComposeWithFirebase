@@ -1,6 +1,9 @@
 package com.ayberk.composeapp
 
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,14 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,19 +32,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.ayberk.composeapp.viewmodel.RegisterViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun register(navHostController:NavHostController){
 
-    var password by remember { mutableStateOf("") }
-    var passwordagain by remember { mutableStateOf("") }
     var isPasswordValid by remember { mutableStateOf(true) }
     var isShowingPasswordError by remember { mutableStateOf(false) }
 
@@ -55,11 +64,41 @@ fun register(navHostController:NavHostController){
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        
-        OutlinedTextField(value = password,
-            onValueChange = {
-                password = it
-            }, label = { Text(text = stringResource(id = R.string.password)) },
+
+        ChangePasswordScreen(navHostController)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+    }
+}
+
+private fun isValidPassword(password: CharSequence): Boolean {
+    return password.length >= 5 // Şifrenin en az 5 karakter olmasını isteyelim.
+}
+
+@Composable
+fun loading(){
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangePasswordScreen(navHostController: NavHostController) {
+    val registerViewModel: RegisterViewModel= hiltViewModel()
+    var password by remember { mutableStateOf("") }
+    var passwordagain by remember { mutableStateOf("") }
+    var isPasswordValid by remember { mutableStateOf(true) }
+    var isShowingPasswordError by remember { mutableStateOf(false) }
+
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally, // Öğeleri yatayda ortala
+        verticalArrangement = Arrangement.Center
+    ){
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Yeni Şifre") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth(0.7f)
@@ -69,10 +108,10 @@ fun register(navHostController:NavHostController){
             }
         )
 
-        OutlinedTextField(value = passwordagain,
-            onValueChange = {
-                passwordagain = it
-            }, label = { Text(text = stringResource(id = R.string.passwordagain)) },
+        OutlinedTextField(
+            value = passwordagain,
+            onValueChange = { passwordagain = it },
+            label = { Text("Şifre Tekrar") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth(0.7f)
@@ -81,8 +120,11 @@ fun register(navHostController:NavHostController){
                 Icon(imageVector = Icons.Default.Lock, contentDescription = null)
             }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        
+        val context = LocalContext.current
+        Spacer(modifier = Modifier.height(10.dp))
         Button(onClick = {
+
             isPasswordValid = isValidPassword(password)
 
             if (isPasswordValid && password == passwordagain) {
@@ -90,7 +132,22 @@ fun register(navHostController:NavHostController){
             } else {
                 isShowingPasswordError = true
             }
-        }) {
+
+            registerViewModel.changePassword(password, passwordagain) { success, message ->
+                if (success) {
+                    // Şifre değişikliği başarılı
+                    Toast.makeText(context,"Şifre Değişikliği Başarılı",Toast.LENGTH_SHORT).show()
+
+                } else {
+                    // Şifre değişikliği başarısız
+                    Toast.makeText(context,"Şifre Değişikliği Yapılamadı",Toast.LENGTH_SHORT).show()
+                }
+            }
+        },
+            modifier = Modifier
+                .fillMaxWidth(0.4f)
+                .padding(bottom = 16.dp)
+            ) {
             Text(text = stringResource(id = R.string.passwordchange))
         }
 
@@ -114,8 +171,4 @@ fun register(navHostController:NavHostController){
             }
         }
     }
-}
-
-private fun isValidPassword(password: CharSequence): Boolean {
-    return password.length >= 5 // Şifrenin en az 5 karakter olmasını isteyelim.
 }

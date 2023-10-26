@@ -48,6 +48,21 @@ class RegisterViewModel @Inject constructor(
          }
    }
 
+   fun changePassword(newPassword: String, confirmPassword: String, onResult: (Boolean, String) -> Unit) {
+      if (newPassword == confirmPassword) {
+         val user = firebaseauth.currentUser
+         user?.updatePassword(newPassword)
+            ?.addOnCompleteListener { task ->
+               if (task.isSuccessful) {
+                  onResult(true, "Şifre değişikliği başarılı")
+               } else {
+                  onResult(false, "Şifre değişikliği başarısız")
+               }
+            }
+      } else {
+         onResult(false, "Şifreler uyuşmuyor")
+      }
+   }
    fun currentUser():Boolean {
       firebaseauth.currentUser
       return false
