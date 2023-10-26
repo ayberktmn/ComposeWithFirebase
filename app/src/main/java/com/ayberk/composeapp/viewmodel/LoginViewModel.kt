@@ -2,6 +2,7 @@ package com.ayberk.composeapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ayberk.composeapp.Loading
 import com.ayberk.composeapp.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

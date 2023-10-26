@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,20 +45,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayberk.composeapp.viewmodel.RegisterViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun register(navHostController:NavHostController){
+
     ChangePasswordScreen(navHostController)
 }
 
 private fun isValidPassword(password: CharSequence): Boolean {
     return password.length >= 5 // Şifrenin en az 5 karakter olmasını isteyelim.
-}
-
-@Composable
-fun loading(){
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,106 +68,122 @@ fun ChangePasswordScreen(navHostController: NavHostController) {
     var isPasswordValid by remember { mutableStateOf(true) }
     var isShowingPasswordError by remember { mutableStateOf(false) }
 
+
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally, // Öğeleri yatayda ortala
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
 
-        Image( painter = painterResource(id = R.drawable.changepassword),
-            contentDescription = "Şifre Değişikliği",
-            modifier = Modifier.size(100.dp)
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Yeni Şifre") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .padding(bottom = 8.dp),
-            leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
-                Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-            },
-            isError = !isPasswordValid, // Hata durumunda isError'ı true yap
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
-                unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+        Loading()
+
+            Image(
+                painter = painterResource(id = R.drawable.changepassword),
+                contentDescription = "Şifre Değişikliği",
+                modifier = Modifier.size(100.dp)
             )
-        )
-
-        OutlinedTextField(
-            value = passwordagain,
-            onValueChange = { passwordagain = it },
-            label = { Text("Şifre Tekrar") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .padding(bottom = 8.dp),
-            leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
-                Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-            },
-            isError = !isPasswordValid, // Hata durumunda isError'ı true yap
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
-                unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+            Spacer(modifier = Modifier.height(30.dp))
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Yeni Şifre") },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .padding(bottom = 8.dp),
+                leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
+                    Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+                },
+                isError = !isPasswordValid, // Hata durumunda isError'ı true yap
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
+                    unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+                )
             )
-        )
-        
-        val context = LocalContext.current
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(onClick = {
 
-            isPasswordValid = isValidPassword(password)
+            OutlinedTextField(
+                value = passwordagain,
+                onValueChange = { passwordagain = it },
+                label = { Text("Şifre Tekrar") },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .padding(bottom = 8.dp),
+                leadingIcon = { // İşte burada sol tarafına simge (ikon) ekliyoruz
+                    Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+                },
+                isError = !isPasswordValid, // Hata durumunda isError'ı true yap
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray, // Hata durumunda çerçeve rengini değiştir
+                    unfocusedBorderColor = if (!isPasswordValid) Color.Red else Color.Gray
+                )
+            )
 
-            if (isPasswordValid && password == passwordagain) {
+            val context = LocalContext.current
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = {
 
-                registerViewModel.changePassword(password, passwordagain) { success, message ->
-                    if (success) {
-                        // Şifre değişikliği başarılı
-                        Toast.makeText(context, "Şifre Değişikliği Başarılı", Toast.LENGTH_SHORT)
-                            .show()
-                        navHostController.navigate("login")
-                        clearPassword(context)
+                    isPasswordValid = isValidPassword(password)
+
+                    if (isPasswordValid && password == passwordagain) {
+
+                        registerViewModel.changePassword(
+                            password,
+                            passwordagain
+                        ) { success, message ->
+                            if (success) {
+                                // Şifre değişikliği başarılı
+                                Toast.makeText(
+                                    context,
+                                    "Şifre Değişikliği Başarılı",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                navHostController.navigate("login")
+                                clearPassword(context)
+                            } else {
+                                // Şifre değişikliği başarısız
+                                Toast.makeText(
+                                    context,
+                                    "Şifre Değişikliği Yapılamadı",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        }
                     } else {
-                        // Şifre değişikliği başarısız
-                        Toast.makeText(context, "Şifre Değişikliği Yapılamadı", Toast.LENGTH_SHORT)
-                            .show()
+                        isShowingPasswordError = true
                     }
-                }
-            }
-            else {
-            isShowingPasswordError = true
-        }
-        },
-            enabled = passwordagain.isNotBlank() && password.isNotBlank(),
-            modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .padding(bottom = 16.dp)
+                },
+                enabled = passwordagain.isNotBlank() && password.isNotBlank(),
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .padding(bottom = 16.dp)
 
             ) {
-            Text(text = stringResource(id = R.string.passwordchange))
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        if (!isPasswordValid || isShowingPasswordError) {
-            if (!isPasswordValid) {
-                Text(
-                    text = "Şifre uzunluğu 5 karakterden fazla olmalıdır.",
-                    color = Color.Red,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                Text(text = stringResource(id = R.string.passwordchange))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            if (!isPasswordValid || isShowingPasswordError) {
+                if (!isPasswordValid) {
+                    Text(
+                        text = "Şifre uzunluğu 5 karakterden fazla olmalıdır.",
+                        color = Color.Red,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
 
-            } else if (isShowingPasswordError) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = "Şifreler uyuşmuyor.",
-                    color = Color.Red,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                } else if (isShowingPasswordError) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text(
+                        text = "Şifreler uyuşmuyor.",
+                        color = Color.Red,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
             }
         }
     }
-}
+

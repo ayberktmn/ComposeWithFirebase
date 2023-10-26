@@ -111,6 +111,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 Icon(imageVector = Icons.Default.Lock, contentDescription = null)
             }
         )
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -126,6 +127,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
 
             Text(
                 text = "Beni Hatırla"
+
             )
             Box(
                 modifier = Modifier
@@ -167,8 +169,10 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 } else {
                     isShowingEmailError = true
                     isShowingPasswordError = true
+
                 }
             },
+
             enabled = email.isNotBlank() && password.isNotBlank(),
             modifier = Modifier
                 .fillMaxWidth(0.5f)
@@ -183,6 +187,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 when (resource) {
                     is Resource.Loading -> {
                         // Yükleme durumunu burada kontrol et
+
                     }
 
                     is Resource.Success -> {
@@ -206,6 +211,7 @@ fun login(navHostController: NavHostController, viewModel: RegisterViewModel = h
                 isPasswordValid = isValidPassword(password)
 
                 if (isEmailValid && isPasswordValid) {
+
                     navHostController.navigate("anasayfa")
                 } else {
                     isShowingEmailError = true
