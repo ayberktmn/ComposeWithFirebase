@@ -70,15 +70,17 @@ fun CityList(cities: List<CityItem>) {
 
 @Composable
 fun CityItem(city: CityItem) {
+    Spacer(modifier = Modifier.height(5.dp))
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, Color.Gray) // Kenarlıkları ekleyin
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.DarkGray)
+                .background(color = Color.LightGray)
                 .clickable {
                     // Şehre tıklama işlevini burada tanımlayabilirsiniz.
                 },
@@ -101,7 +103,7 @@ fun CityItem(city: CityItem) {
                     text = city.SehirAdi,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Blue,
+                    color = Color.Yellow,
                     textAlign = TextAlign.Center // Metni dikeyde ortala
                 )
                 Text(
@@ -115,6 +117,7 @@ fun CityItem(city: CityItem) {
         }
     }
 }
+
 
 
 
