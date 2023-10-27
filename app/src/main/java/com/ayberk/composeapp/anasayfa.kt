@@ -53,14 +53,14 @@ fun anasayfa(navHostController: NavHostController){
 
 @Composable
 fun CryptoList(
-    navController: NavController,
+    navHostController: NavHostController,
     viewModel: countrylistviewmodel = hiltViewModel()
 ) {
     val countryList by remember { viewModel.countryList }
     val errorMessage by remember { viewModel.errorMessage }
     val isLoading by remember { viewModel.isLoading }
 
-    CountryListView(countrys = countryList,navController = navController)
+    CountryListView(countrys = countryList,navHostController = navHostController)
 
     Box(
         contentAlignment = Alignment.Center,
@@ -79,17 +79,17 @@ fun CryptoList(
 }
 
 @Composable
-fun CountryListView(countrys: List<CountryItem>,navController: NavController) {
+fun CountryListView(countrys: List<CountryItem>,navHostController: NavHostController) {
     LazyColumn(contentPadding = PaddingValues(5.dp)) {
         items(countrys) { country ->
-            CoutryRow(navController = navController, country = country)
+            CoutryRow(navHostController = navHostController, country = country)
             Spacer(modifier = Modifier.height(5.dp))
         }
     }
 }
 
 @Composable
-fun CoutryRow(navController: NavController, country: CountryItem) {
+fun CoutryRow(navHostController: NavHostController, country: CountryItem) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -100,7 +100,8 @@ fun CoutryRow(navController: NavController, country: CountryItem) {
                 .fillMaxWidth()
                 .background(color = Color.Black)
                 .clickable {
-                    //  navController.navigate("crypto_detail_screen/${crypto.currency}/${crypto.price}")
+
+                    navHostController.navigate("country/${country.UlkeID}")
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
