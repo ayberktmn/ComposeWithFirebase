@@ -18,10 +18,9 @@ class countrylistviewmodel @Inject constructor(
 ) : ViewModel() {
 
     var countryList = mutableStateOf<List<CountryItem>>(listOf())
-    var cityList = mutableStateOf<List<CityItem>>(listOf())
     var errorMessage = mutableStateOf("")
     var isLoading = mutableStateOf(false)
-    var isLoadingcity = mutableStateOf(false)
+
 
     init {
         loadCountry()
