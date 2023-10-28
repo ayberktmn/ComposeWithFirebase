@@ -100,7 +100,6 @@ fun CoutryRow(navHostController: NavHostController, country: CountryItem) {
                 .fillMaxWidth()
                 .background(color = Color.Black)
                 .clickable {
-
                     navHostController.navigate("country/${country.UlkeID}")
                 },
             verticalAlignment = Alignment.CenterVertically

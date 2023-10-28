@@ -32,8 +32,7 @@ fun navigation(){
         composable("anasayfa") {
             anasayfa(navHostController)
         }
-        composable(
-            "country/{countryCode}",
+        composable("country/{countryCode}",
             arguments = listOf(
                 navArgument("countryCode") {
                     type = NavType.StringType
