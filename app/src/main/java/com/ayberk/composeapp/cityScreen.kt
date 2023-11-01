@@ -1,45 +1,35 @@
 package com.ayberk.composeapp
 
+import android.content.pm.LauncherApps
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.ayberk.composeapp.Navigation.navigation
 import com.ayberk.composeapp.models.city.City
 import com.ayberk.composeapp.models.city.CityItem
 import com.ayberk.composeapp.util.Resource
@@ -58,7 +48,6 @@ fun countrydetails(navHostController: NavHostController, countryCode: String, vi
 @Composable
 fun CityList(navHostController: NavHostController,cities: List<CityItem>) {
     CityItemGrid(navHostController, cities)
-
 }
 @Composable
 fun CityItemGrid(navHostController: NavHostController, cities: List<CityItem>) {
@@ -71,15 +60,19 @@ fun CityItemGrid(navHostController: NavHostController, cities: List<CityItem>) {
 
 @Composable
 fun CityItem(navHostController: NavHostController, city: CityItem) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .height(70.dp)
-            .border(1.dp, Color.Blue)
+            .border(1.dp, Color.Red)
             .background(Color.Black)
             .padding(8.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable { navHostController.navigate("town/${city.SehirID}")
+            Toast.makeText(context,"${city.SehirAdi} İlçeleri Listeleniyor",Toast.LENGTH_SHORT).show()
+            }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.city),

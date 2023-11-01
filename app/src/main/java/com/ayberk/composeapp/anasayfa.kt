@@ -48,11 +48,11 @@ fun anasayfa(navHostController: NavHostController){
 
     var allowBackNavigation by remember { mutableStateOf(true) }
     BackHandler(enabled = allowBackNavigation){}
-    CryptoList(navHostController)
+    CounrtyList(navHostController)
 }
 
 @Composable
-fun CryptoList(
+fun CounrtyList(
     navHostController: NavHostController,
     viewModel: countrylistviewmodel = hiltViewModel()
 ) {

@@ -15,6 +15,7 @@ import com.ayberk.composeapp.anasayfa
 import com.ayberk.composeapp.countrydetails
 import com.ayberk.composeapp.login
 import com.ayberk.composeapp.register
+import com.ayberk.composeapp.townScreen
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -44,6 +45,21 @@ fun navigation(){
             }
             countrydetails(
                 countryCode = countryCode ?: "",
+                navHostController = navHostController
+            )
+        }
+        composable("town/{townCode}",
+            arguments = listOf(
+                navArgument("townCode") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val townCode = remember {
+                it.arguments?.getString("townCode")
+            }
+            townScreen(
+                townCode = townCode ?: "",
                 navHostController = navHostController
             )
         }
