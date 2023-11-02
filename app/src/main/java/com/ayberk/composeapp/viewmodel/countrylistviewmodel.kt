@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ayberk.composeapp.models.CountryItem
 import com.ayberk.composeapp.models.city.City
 import com.ayberk.composeapp.models.city.CityItem
+import com.ayberk.composeapp.models.times.Times
 import com.ayberk.composeapp.models.town.Town
 import com.ayberk.composeapp.retrofit.CountryRepository
 import com.ayberk.composeapp.util.Resource
@@ -61,6 +62,9 @@ class countrylistviewmodel @Inject constructor(
 
     suspend fun getTown(townCode: String): Resource<Town> {
         return repository.getTown(townCode)
+    }
 
+    suspend fun getTimes(timesCode: String): Resource<Times> {
+        return repository.getTimes(timesCode)
     }
 }

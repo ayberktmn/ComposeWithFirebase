@@ -2,6 +2,7 @@ package com.ayberk.composeapp.retrofit
 
 import com.ayberk.composeapp.models.Country
 import com.ayberk.composeapp.models.city.City
+import com.ayberk.composeapp.models.times.Times
 import com.ayberk.composeapp.models.town.Town
 import com.ayberk.composeapp.util.Resource
 import javax.inject.Inject
@@ -31,6 +32,15 @@ class CountryRepository @Inject constructor(
     suspend fun getTown(townCode: String): Resource<Town> {
         val response = try {
             api.getTown(townCode)
+        } catch(e: Exception) {
+            return Resource.Error("Error")
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun getTimes(timesCode: String): Resource<Times> {
+        val response = try {
+            api.getTimes(timesCode)
         } catch(e: Exception) {
             return Resource.Error("Error")
         }
