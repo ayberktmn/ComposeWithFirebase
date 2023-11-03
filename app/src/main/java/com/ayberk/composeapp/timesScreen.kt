@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,49 +66,64 @@ fun TimesItemGrid(navHostController: NavHostController,times: List<TimesItem>){
 }
 @Composable
 fun TimesItem(navHostController: NavHostController, times: TimesItem) {
-    Card(
+    Surface(
         modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
+            .padding(8.dp),
+        shape = MaterialTheme.shapes.medium,
+        color = Color.Blue
     ) {
-        Column(
-            modifier = Modifier.padding(5.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(5.dp),
-                verticalAlignment = Alignment.CenterVertically
+        Box {
+            Image(
+                painter = painterResource(id = R.drawable.background),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentScale = ContentScale.FillBounds
+            )
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
             ) {
-                Text(
-                    text = times.MiladiTarihUzun,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(bottom = 8.dp)
-                        .padding(start = 8.dp)
-                )
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = times.MiladiTarihUzun,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(bottom = 8.dp)
+                                .padding(start = 8.dp)
+                        )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.mosque), // Değiştirmeniz gereken kısım
-                    contentDescription = null,
-                    tint = Color.Black, // İkon rengi
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Top)
-                        .padding(8.dp)
-                )
+                        Icon(
+                            painter = painterResource(id = R.drawable.mosque),
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .align(Alignment.Top)
+                                .padding(8.dp)
+                        )
+                    }
+                    PrayerTime("İmsak Saati:", times.Imsak)
+                    PrayerTime("Öğle Saati:", times.Ogle)
+                    PrayerTime("İkindi Saati:", times.Ikindi)
+                    PrayerTime("Akşam Saati:", times.Aksam)
+                    PrayerTime("Yatsı Saati:", times.Yatsi)
+                }
             }
-            PrayerTime("İmsak Saati:", times.Imsak)
-            PrayerTime("Öğle Saati:", times.Ogle)
-            PrayerTime("İkindi Saati:", times.Ikindi)
-            PrayerTime("Akşam Saati:", times.Aksam)
-            PrayerTime("Yatsı Saati:", times.Yatsi)
         }
     }
 }
+
 @Composable
 fun PrayerTime(title: String, time: String) {
     Row(
@@ -133,7 +151,6 @@ fun PrayerTime(title: String, time: String) {
                 .padding(end = 8.dp)
                 .padding(top = 8.dp)
         )
-
     }
 }
 
