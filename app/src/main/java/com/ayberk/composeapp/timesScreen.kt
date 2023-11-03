@@ -1,8 +1,11 @@
 package com.ayberk.composeapp
 
+import android.content.res.Resources.Theme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +17,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,7 +61,6 @@ fun TimesItemGrid(navHostController: NavHostController,times: List<TimesItem>){
         }
     }
 }
-
 @Composable
 fun TimesItem(navHostController: NavHostController, times: TimesItem) {
     Card(
@@ -67,15 +72,32 @@ fun TimesItem(navHostController: NavHostController, times: TimesItem) {
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
-            Text(
-                text = times.MiladiTarihUzun,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
-                    .padding(start = 8.dp)
-            )
+            Row(
+                modifier = Modifier.padding(5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = times.MiladiTarihUzun,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(bottom = 8.dp)
+                        .padding(start = 8.dp)
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.mosque), // Değiştirmeniz gereken kısım
+                    contentDescription = null,
+                    tint = Color.Black, // İkon rengi
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Top)
+                        .padding(8.dp)
+                )
+            }
             PrayerTime("İmsak Saati:", times.Imsak)
             PrayerTime("Öğle Saati:", times.Ogle)
             PrayerTime("İkindi Saati:", times.Ikindi)
@@ -84,7 +106,6 @@ fun TimesItem(navHostController: NavHostController, times: TimesItem) {
         }
     }
 }
-
 @Composable
 fun PrayerTime(title: String, time: String) {
     Row(
@@ -98,7 +119,8 @@ fun PrayerTime(title: String, time: String) {
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .padding(start = 8.dp)
         )
         Text(
@@ -106,10 +128,12 @@ fun PrayerTime(title: String, time: String) {
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.End,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .padding(end = 8.dp)
                 .padding(top = 8.dp)
         )
+
     }
 }
 
